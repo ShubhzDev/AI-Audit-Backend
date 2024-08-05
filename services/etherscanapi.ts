@@ -16,7 +16,7 @@ interface EtherscanResponse {
   }>;
 }
 
-export const getRawSmartContract = async(contractAddress: string): Promise<string> => {
+export const getRawSmartContract = async(contractAddress: string): Promise<string | null> => {
   try {
     const etherScanUrl = `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${contractAddress}&apikey=${process.env.Etherscan_api}`;
 
@@ -26,10 +26,10 @@ export const getRawSmartContract = async(contractAddress: string): Promise<strin
     if (data.status === "1") {
       return data.result[0].SourceCode;
     } else {
-      return "-1";
+      return null;
     }
   } catch (error) {
     console.error("Error caught : " + error);
-    return "-1";
+    return null;
   }
 }

@@ -31,7 +31,7 @@ const prompt = `Give audit score out of 10 and give potential issue on basis of 
 
 `;
 
-export const getAuditResponse = async(contract: string): Promise<AuditResponse | string> => {
+export const getAuditResponse = async(contract: string): Promise<AuditResponse | null> => {
   try {
     const completion = await openai.chat.completions.create({
       model: "meta/llama-3.1-8b-instruct",
@@ -48,7 +48,7 @@ export const getAuditResponse = async(contract: string): Promise<AuditResponse |
       responseContent += chunk.choices[0]?.delta?.content || "";
     }
 
-    let auditResponse: AuditResponse = JSON.parse(
+    const auditResponse : AuditResponse = JSON.parse(
       responseContent
     ) as AuditResponse;
 
@@ -57,6 +57,6 @@ export const getAuditResponse = async(contract: string): Promise<AuditResponse |
     return auditResponse;
   } catch (error) {
     console.error("Error fetching completion:", error);
-    return "-1";
+    return null;
   }
 }
