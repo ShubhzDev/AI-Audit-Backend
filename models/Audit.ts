@@ -1,6 +1,7 @@
-import mongoose ,{Schema,Document, StringSchemaDefinition } from "mongoose"
+import mongoose ,{Schema,Document, Types, StringSchemaDefinition } from "mongoose"
 
-interface IAudit extends Document{
+export interface IAudit extends Document{
+    _id: Types.ObjectId;
     contractAddress : string,
     auditData : string,
 }

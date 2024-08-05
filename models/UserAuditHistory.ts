@@ -1,6 +1,6 @@
 import mongoose,{Schema,Document, Types, Mongoose, mongo} from "mongoose";
 
-interface IUserAuditHistory extends Document{
+export interface IUserAuditHistory extends Document{
     walletAddress : string,
     listOfAddress : Types.ObjectId[],
 }

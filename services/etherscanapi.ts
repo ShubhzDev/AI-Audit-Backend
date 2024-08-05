@@ -16,7 +16,7 @@ interface EtherscanResponse {
   }>;
 }
 
-async function getRawSmartContract(contractAddress: string): Promise<string> {
+export const getRawSmartContract = async(contractAddress: string): Promise<string> => {
   try {
     const etherScanUrl = `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${contractAddress}&apikey=${process.env.Etherscan_api}`;
 

@@ -7,7 +7,7 @@ interface Severity {
   recomendation: string;
 }
 
-interface AuditResponse {
+export interface AuditResponse {
   score: string;
   severity: Severity[];
 }
@@ -31,7 +31,7 @@ const prompt = `Give audit score out of 10 and give potential issue on basis of 
 
 `;
 
-async function getAudit(contract: string): Promise<AuditResponse | string> {
+export const getAuditResponse = async(contract: string): Promise<AuditResponse | string> => {
   try {
     const completion = await openai.chat.completions.create({
       model: "meta/llama-3.1-8b-instruct",
