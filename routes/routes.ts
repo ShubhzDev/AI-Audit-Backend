@@ -1,8 +1,8 @@
 import express from "express"
-import getRawSmartContract from "../controllers/SmartContractController"
+import audit from "../controllers/SmartContractController"
 
 const router = express.Router();
 
-router.get("/api/audit",getRawSmartContract)
+router.get("/audit",audit)
 
- 
+export default router;

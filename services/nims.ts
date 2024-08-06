@@ -31,8 +31,13 @@ const prompt = `Give audit score out of 10 and give potential issue on basis of 
 
 `;
 
-export const getAuditResponse = async(contract: string): Promise<AuditResponse | null> => {
+export const getAuditResponse = async(contract: string | null): Promise<AuditResponse | null> => {
   try {
+
+    if(!contract){
+      return null;
+    }
+
     const completion = await openai.chat.completions.create({
       model: "meta/llama-3.1-8b-instruct",
       messages: [{ role: "user", content: prompt + contract }],
@@ -52,7 +57,7 @@ export const getAuditResponse = async(contract: string): Promise<AuditResponse |
       responseContent
     ) as AuditResponse;
 
-    console.log("AuditResponse Response : ", auditResponse);
+    // console.log("AuditResponse Response : ", auditResponse);
 
     return auditResponse;
   } catch (error) {

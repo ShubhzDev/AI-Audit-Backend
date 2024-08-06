@@ -10,6 +10,6 @@ const userAuditHistorySchema : Schema = new mongoose.Schema({
     listOfAddrress : {type: String,required : true},
 })
 
-const userAuditHistoryModel = mongoose.model<IUserAuditHistory>("UserAuditHistory",userAuditHistorySchema);
+const UserAuditHistoryModel = mongoose.model<IUserAuditHistory>("UserAuditHistory",userAuditHistorySchema,"UserAuditHistory");
 
-export default userAuditHistoryModel;
+export default UserAuditHistoryModel;
