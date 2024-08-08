@@ -13,54 +13,97 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const etherscanapi_1 = require("../services/etherscanapi");
+const binanceapi_1 = require("../services/binanceapi");
 const nims_1 = require("../services/nims");
 const Audit_1 = __importDefault(require("../models/Audit"));
+const UserAuditHistory_1 = __importDefault(require("../models/UserAuditHistory"));
 const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("audit");
     // try {
-    const contractAddress = req.body.contractAddress;
-    const walletAddress = req.params.walletAddress;
-    if (!contractAddress) {
-        res.status(500).json({ message: "contract address is missing" });
+    const contractAddress = req.params.contractAddress;
+    const walletAddress = req.body.walletAddress;
+    const network = req.body.network;
+    if (!contractAddress || contractAddress.trim() === "") {
+        return res.status(500).send({ message: "contract address is missing" });
     }
-    const rawContract = yield (0, etherscanapi_1.getRawSmartContract)(contractAddress);
-    if (!rawContract) {
-        res.status(500).json({ message: "Invalid Contract Address" });
+    let rawContract = null;
+    if (network === "ETH") {
+        rawContract = yield (0, etherscanapi_1.getRawSmartContractFromEtH)(contractAddress);
     }
+    else if (network === "BNB") {
+        rawContract = yield (0, binanceapi_1.getRawSmartContractFromBNB)(contractAddress);
+    }
+    else {
+        return res.status(500).send({ message: "Invalid Network!" });
+    }
+    if (!rawContract || rawContract.trim() === "") {
+        console.log("rawContract null ");
+        return res.status(500).send({ message: "Invalid Contract Address!" });
+    }
+    console.log("came here ");
     const auditResponse = yield (0, nims_1.getAuditResponse)(rawContract);
-    if (!auditResponse) {
-        res.status(500).json({ message: "Invalid Contract Address" });
+    if (auditResponse === null) {
+        return res.status(500).send({ message: "Invalid Contract Address!" });
     }
     const auditEntry = yield Audit_1.default.findOne({
         contractAddress: contractAddress,
     });
-    console.log("contractAddress", contractAddress);
-    console.log("auditData", auditResponse);
+    // console.log("contractAddress", contractAddress);
+    // console.log("auditData", auditResponse);
     if (!auditEntry) {
         const newAuditEntry = new Audit_1.default({
             contractAddress: contractAddress,
-            auditData: auditResponse
+            auditData: auditResponse,
         });
         const auditEntryId = yield newAuditEntry.save();
         console.log("auditEntryId", auditEntryId);
-        // if (walletAddress) {
-        //   const walletEntry: IUserAuditHistory | null =
-        //     await userAuditHistoryModel.findOne({ walletAddress: walletAddress });
-        //   if (walletEntry) {
-        //     //when wallet exists
-        //     walletEntry.listOfAddress.push(auditEntryId._id);
-        //     await walletEntry.save();
-        //   } else {
-        //     //wallet doesn't exist
-        //     const walletDoc = new userAuditHistoryModel({
-        //       walletAddress: walletAddress,
-        //       listOfAddress: auditResponse,
-        //     });
-        //     await walletDoc.save();
-        //   }
-        // }
+        if (walletAddress) {
+            const walletEntry = yield UserAuditHistory_1.default.findOne({ walletAddress: walletAddress });
+            if (walletEntry) {
+                if (!Array.isArray(walletEntry.listOfAddress)) {
+                    walletEntry.listOfAddress = []; // Initialize as an empty array if it's not an array
+                }
+                if (!walletEntry.listOfAddress.includes(auditEntryId.id)) {
+                    walletEntry.listOfAddress.push(auditEntryId.id); // Add id if it's not already present
+                }
+                yield walletEntry.save();
+            }
+            else {
+                //wallet doesn't exist
+                const walletDoc = new UserAuditHistory_1.default({
+                    walletAddress: walletAddress,
+                    listOfAddress: [auditEntryId._id],
+                });
+                yield walletDoc.save();
+            }
+        }
+        return res.status(200).send(newAuditEntry.auditData);
     }
-    res.status(200).json(auditResponse);
+    else {
+        if (walletAddress) {
+            const walletEntry = yield UserAuditHistory_1.default.findOne({ walletAddress: walletAddress });
+            if (walletEntry) {
+                //when wallet exists
+                if (!Array.isArray(walletEntry.listOfAddress)) {
+                    walletEntry.listOfAddress = []; // Initialize as an empty array if it's not an array
+                }
+                if (!walletEntry.listOfAddress.includes(auditEntry.id)) {
+                    walletEntry.listOfAddress.push(auditEntry.id); // Add id if it's not already present
+                }
+                // Push the new audit entry ID into the list
+                yield walletEntry.save();
+            }
+            else {
+                //wallet doesn't exist
+                const walletDoc = new UserAuditHistory_1.default({
+                    walletAddress: walletAddress,
+                    listOfAddress: [auditEntry._id],
+                });
+                yield walletDoc.save();
+            }
+        }
+        return res.status(200).send(auditEntry.auditData);
+    }
     // } catch (error) {
     //   console.error("Server Error!!");
     // }

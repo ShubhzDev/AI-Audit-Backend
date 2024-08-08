@@ -13,11 +13,11 @@ export interface AuditResponse {
 }
 
 const openai = new OpenAI({
-  apiKey: process.env.nndia_api, // Ensure your API key is set in the environment variables
+  apiKey: process.env.Nvidia_Api, // Ensure your API key is set in the environment variables
   baseURL: "https://integrate.api.nvidia.com/v1",
 });
 
-const prompt = `Give audit score out of 10 and give potential issue on basis of severity in list.You are an AI that provides audit responses in below pure json format.Please return the data in the following structure only without any newline character:
+const prompt = `You are an AI that provides audit responses in below pure json format without extra infromation.Give audit score percetange out of 100 and give potential issue on basis of severity in list.Please return the data in the following structure only without any newline character and no data can be empty and null:
 {
   "score": "",
   "severity": [

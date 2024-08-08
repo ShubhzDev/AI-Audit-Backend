@@ -12,25 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRawSmartContractFromEtH = void 0;
+exports.getRawSmartContractFromBNB = void 0;
 const axios_1 = __importDefault(require("axios"));
-const getRawSmartContractFromEtH = (contractAddress) => __awaiter(void 0, void 0, void 0, function* () {
+const getRawSmartContractFromBNB = (contractAddress) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const etherScanUrl = `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${contractAddress}&apikey=${process.env.Ether_Scan_Api}`;
+        const etherScanUrl = `https://api.bscscan.com/api?module=contract&action=getsourcecode&address=${contractAddress}&apikey=${process.env.Binance_Scan_Api}`;
         const response = yield axios_1.default.get(etherScanUrl);
         const data = response.data;
         // console.log(data);
         if (data.status === "1") {
+            // console.log("data.result[0].SourceCode ",data);
             return data.result[0].SourceCode;
         }
         else {
+            console.log("bnb not error");
             return null;
         }
     }
     catch (error) {
-        console.log("dfdfd");
+        console.log("bnb");
         console.error("Error caught : " + error);
         return null;
     }
 });
-exports.getRawSmartContractFromEtH = getRawSmartContractFromEtH;
+exports.getRawSmartContractFromBNB = getRawSmartContractFromBNB;

@@ -7,7 +7,7 @@ export interface IUserAuditHistory extends Document{
 
 const userAuditHistorySchema : Schema = new mongoose.Schema({
     walletAddress : {type:String,required:true,unique:true},
-    listOfAddrress : {type: String,required : true},
+    listOfAddress : { type: [mongoose.Schema.Types.ObjectId], ref: "Audit" },
 })
 
 const UserAuditHistoryModel = mongoose.model<IUserAuditHistory>("UserAuditHistory",userAuditHistorySchema,"UserAuditHistory");

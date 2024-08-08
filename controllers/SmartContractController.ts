@@ -1,74 +1,117 @@
 import { Response, Request } from "express";
-import { getRawSmartContract } from "../services/etherscanapi";
+import { getRawSmartContractFromEtH } from "../services/etherscanapi";
+import { getRawSmartContractFromBNB } from "../services/binanceapi";
+
 import { getAuditResponse, AuditResponse } from "../services/nims";
 import AuditModel, { IAudit } from "../models/Audit";
 import UserAuditHistoryModel, {
   IUserAuditHistory,
 } from "../models/UserAuditHistory";
-import { ObjectId } from "mongoose";
 
 const audit = async (req: Request, res: Response) => {
   console.log("audit");
   // try {
-    const contractAddress: string = req.body.contractAddress;
-    const walletAddress: string = req.params.walletAddress;
+  const contractAddress: string = req.params.contractAddress;
+  const walletAddress: string = req.body.walletAddress;
+  const network: string = req.body.network;
 
-    if (!contractAddress) {
-      res.status(500).json({ message: "contract address is missing" });
-    }
+  if (!contractAddress || contractAddress.trim() === "") {
+    return res.status(500).send({ message: "contract address is missing" });
+  }
 
-    const rawContract: string | null = await getRawSmartContract(contractAddress);
+  let rawContract: string | null = null;
 
-    if (!rawContract) {
-        res.status(500).json({ message: "Invalid Contract Address" });
-      }
+  if (network === "ETH") {
+    rawContract = await getRawSmartContractFromEtH(contractAddress);
+  } else if (network === "BNB") {
+    rawContract = await getRawSmartContractFromBNB(contractAddress);
+  } else {
+    return res.status(500).send({ message: "Invalid Network!" });
+  }
 
-    const auditResponse: AuditResponse | null = await getAuditResponse(
-      rawContract
-    );
+  if (!rawContract || rawContract.trim() === "") {
+    console.log("rawContract null ");
 
-    if (!auditResponse) {
-      res.status(500).json({ message: "Invalid Contract Address" });
-    }
+    return res.status(500).send({ message: "Invalid Contract Address!" });
+  }
 
-    const auditEntry: IAudit | null = await AuditModel.findOne({
+  console.log("came here ");
+
+  const auditResponse: AuditResponse | null = await getAuditResponse(
+    rawContract
+  );
+
+  if (auditResponse === null) {
+    return res.status(500).send({ message: "Invalid Contract Address!" });
+  }
+
+  const auditEntry: IAudit | null = await AuditModel.findOne({
+    contractAddress: contractAddress,
+  });
+
+  // console.log("contractAddress", contractAddress);
+  // console.log("auditData", auditResponse);
+
+  if (!auditEntry) {
+    const newAuditEntry: IAudit = new AuditModel({
       contractAddress: contractAddress,
+      auditData: auditResponse,
     });
 
-    console.log("contractAddress",contractAddress);
-    console.log("auditData",auditResponse);
+    const auditEntryId: IAudit = await newAuditEntry.save();
+    console.log("auditEntryId", auditEntryId);
+    if (walletAddress) {
+      const walletEntry: IUserAuditHistory | null =
+        await UserAuditHistoryModel.findOne({ walletAddress: walletAddress });
 
-    if (!auditEntry) {
-      const newAuditEntry: IAudit = new AuditModel({
-        contractAddress: contractAddress,
-        auditData: auditResponse
-      });
+      if (walletEntry) {
+        if (!Array.isArray(walletEntry.listOfAddress)) {
+          walletEntry.listOfAddress = []; // Initialize as an empty array if it's not an array
+        }
+        if (!walletEntry.listOfAddress.includes(auditEntryId.id)) {
+          walletEntry.listOfAddress.push(auditEntryId.id); // Add id if it's not already present
+        }
 
-      const auditEntryId: IAudit = await newAuditEntry.save();
-      console.log("auditEntryId",auditEntryId);
-      // if (walletAddress) {
-      //   const walletEntry: IUserAuditHistory | null =
-      //     await userAuditHistoryModel.findOne({ walletAddress: walletAddress });
+        await walletEntry.save();
+      } else {
+        //wallet doesn't exist
+        const walletDoc = new UserAuditHistoryModel({
+          walletAddress: walletAddress,
+          listOfAddress: [auditEntryId._id],
+        });
 
-      //   if (walletEntry) {
-      //     //when wallet exists
-      //     walletEntry.listOfAddress.push(auditEntryId._id);
-      //     await walletEntry.save();
-      //   } else {
-      //     //wallet doesn't exist
-      //     const walletDoc = new userAuditHistoryModel({
-      //       walletAddress: walletAddress,
-      //       listOfAddress: auditResponse,
-      //     });
-
-      //     await walletDoc.save();
-      //   }
-      // }
+        await walletDoc.save();
+      }
     }
+    return res.status(200).send(newAuditEntry.auditData);
+  } else {
+    if (walletAddress) {
+      const walletEntry: IUserAuditHistory | null =
+        await UserAuditHistoryModel.findOne({ walletAddress: walletAddress });
 
-    res.status(200).json(auditResponse);
+      if (walletEntry) {
+        //when wallet exists
+        if (!Array.isArray(walletEntry.listOfAddress)) {
+          walletEntry.listOfAddress = []; // Initialize as an empty array if it's not an array
+        }
+        if (!walletEntry.listOfAddress.includes(auditEntry.id)) {
+          walletEntry.listOfAddress.push(auditEntry.id); // Add id if it's not already present
+        }
 
+        // Push the new audit entry ID into the list
+        await walletEntry.save();
+      } else {
+        //wallet doesn't exist
+        const walletDoc = new UserAuditHistoryModel({
+          walletAddress: walletAddress,
+          listOfAddress: [auditEntry._id],
+        });
 
+        await walletDoc.save();
+      }
+    }
+    return res.status(200).send(auditEntry.auditData);
+  }
   // } catch (error) {
   //   console.error("Server Error!!");
   // }
