@@ -16,9 +16,11 @@ const UserAuditHistory_1 = __importDefault(require("../models/UserAuditHistory")
 const walletAuditHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("audit");
     const walletAddress = req.params.walletAddress;
+    if (!walletAddress || walletAddress.trim() === "") {
+        return res.status(500).send({ message: "Invalid walletAddress!" });
+    }
     if (walletAddress) {
-        const walletEntry = yield UserAuditHistory_1.default.findOne({ walletAddress: walletAddress });
-        //   const audit : IAudit | null = await AuditModel.findById(_id:walletEntry.listOfAddress.)
+        const walletEntry = yield UserAuditHistory_1.default.findOne({ walletAddress: walletAddress }).populate('listOfAddress');
         if (walletEntry) {
             //when wallet exists
             return res.status(200).send(walletEntry.listOfAddress);

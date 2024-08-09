@@ -8,12 +8,14 @@ const walletAuditHistory = async (req: Request, res: Response) => {
   console.log("audit");
   const walletAddress: string = req.params.walletAddress;
 
+  if(!walletAddress || walletAddress.trim() === ""){
+    return res.status(500).send({ message: "Invalid walletAddress!" });
+  }
+
+
+
   if (walletAddress) {
-    const walletEntry: IUserAuditHistory | null =
-      await UserAuditHistoryModel.findOne({ walletAddress: walletAddress });
-
-
-    //   const audit : IAudit | null = await AuditModel.findById(_id:walletEntry.listOfAddress.)
+    const walletEntry: IUserAuditHistory | null = await UserAuditHistoryModel.findOne({ walletAddress: walletAddress }).populate('listOfAddress');
 
     if (walletEntry) {
       //when wallet exists
@@ -23,6 +25,7 @@ const walletAuditHistory = async (req: Request, res: Response) => {
       return res.status(404).send({ message: "No Data!" });
     }
   }
+  
 };
 
 export default walletAuditHistory;
