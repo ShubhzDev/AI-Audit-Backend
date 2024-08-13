@@ -15,7 +15,7 @@ const severitySchema: Schema = new Schema({
 
 const auditResponseSchema: Schema = new Schema({
     score: { type: String, required: true },
-    severity: { type: [severitySchema], required: true }, // Array of Severity
+    severity: { type: [severitySchema], required: true },
 });
 
 const auditSchema : Schema = new mongoose.Schema({

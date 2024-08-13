@@ -31,7 +31,7 @@ const severitySchema = new mongoose_1.Schema({
 });
 const auditResponseSchema = new mongoose_1.Schema({
     score: { type: String, required: true },
-    severity: { type: [severitySchema], required: true }, // Array of Severity
+    severity: { type: [severitySchema], required: true },
 });
 const auditSchema = new mongoose_1.default.Schema({
     contractAddress: { type: String, required: true, unique: true },

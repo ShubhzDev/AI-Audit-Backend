@@ -2,7 +2,7 @@ import { Response, Request } from "express";
 import { getRawSmartContractFromEtH } from "../services/etherscanapi";
 import { getRawSmartContractFromBNB } from "../services/binanceapi";
 
-import { getAuditResponse, AuditResponse } from "../services/nims";
+import { getAuditResponse, AuditResponse } from "../services/openaiApi";
 import AuditModel, { IAudit } from "../models/Audit";
 import UserAuditHistoryModel, {
   IUserAuditHistory,

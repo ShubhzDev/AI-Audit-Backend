@@ -2,7 +2,6 @@ import { Response, Request } from "express";
 import UserAuditHistoryModel, {
   IUserAuditHistory,
 } from "../models/UserAuditHistory";
-import AuditModel, { IAudit } from "../models/Audit";
 
 const walletAuditHistory = async (req: Request, res: Response) => {
   console.log("audit");
@@ -11,8 +10,6 @@ const walletAuditHistory = async (req: Request, res: Response) => {
   if(!walletAddress || walletAddress.trim() === ""){
     return res.status(500).send({ message: "Invalid walletAddress!" });
   }
-
-
 
   if (walletAddress) {
     const walletEntry: IUserAuditHistory | null = await UserAuditHistoryModel.findOne({ walletAddress: walletAddress }).populate('listOfAddress');

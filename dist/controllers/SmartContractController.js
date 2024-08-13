@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const etherscanapi_1 = require("../services/etherscanapi");
 const binanceapi_1 = require("../services/binanceapi");
-const nims_1 = require("../services/nims");
+const openaiApi_1 = require("../services/openaiApi");
 const Audit_1 = __importDefault(require("../models/Audit"));
 const UserAuditHistory_1 = __importDefault(require("../models/UserAuditHistory"));
 const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,7 +41,7 @@ const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(500).send({ message: "Invalid Contract Address!" });
     }
     console.log("came here ");
-    const auditResponse = yield (0, nims_1.getAuditResponse)(rawContract);
+    const auditResponse = yield (0, openaiApi_1.getAuditResponse)(rawContract);
     if (auditResponse === null) {
         return res.status(500).send({ message: "Invalid Contract Address!" });
     }
