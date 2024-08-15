@@ -9,6 +9,9 @@ interface Severity {
 
 export interface AuditResponse {
   score: string;
+  high:string,
+  medium:string,
+  low:string,
   severity: Severity[];
 }
 
@@ -18,8 +21,13 @@ const openai = new OpenAI({
 });
 
 const prompt = `You are an AI that provides audit responses in below pure json format without extra infromation.Give audit score percetange out of 100 and give potential issue on basis of severity in list.Please return the data in the following structure only without any newline character and no data can be empty and null:
+High,Medium and Low severity tells total number of relevant bugs you listed.
+
 {
   "score": "",
+  "high": "",
+  "medium": "",
+  "low": "",
   "severity": [
     {
       "level": "",

@@ -24,15 +24,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const AutoIncrement = require('mongoose-sequence')(mongoose_1.default);
 const severitySchema = new mongoose_1.Schema({
     level: { type: String, required: true },
     description: { type: String, required: true },
     recomendation: { type: String, required: true },
-});
+}
+// ,{
+//     _id: true, // Enable auto-incrementing _id field
+//     autoIndex: true // Create indexes automatically
+// }
+);
+// Apply the auto-increment plugin to the severity schema
+// severitySchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 }); // Start from 1
 const auditResponseSchema = new mongoose_1.Schema({
+    id: { type: Number, required: true, unique: true },
     score: { type: String, required: true },
+    high: { type: String, required: true },
+    medium: { type: String, required: true },
+    low: { type: String, required: true },
     severity: { type: [severitySchema], required: true },
 });
+auditResponseSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 }); // Start from 1
 const auditSchema = new mongoose_1.default.Schema({
     contractAddress: { type: String, required: true, unique: true },
     auditData: { type: auditResponseSchema, required: true }

@@ -12,6 +12,9 @@ interface Severity {
 
 export interface AuditResponse {
   score: string;
+  high:string,
+  medium:string,
+  low:string,
   severity: Severity[];
 }
 
@@ -22,9 +25,14 @@ const openai = new OpenAI({
   baseURL: "https://api.openai.com/v1",
 });
 
-const prompt = `You are an AI that provides audit responses in below pure json format without extra information. Give audit score percentage out of 100 and give potential issues on the basis of severity in a list. Please return the data in the following structure only without any newline character and no data can be empty and null:
+const prompt = `You are an AI that provides audit responses in below pure json format without extra infromation.Give audit score percetange out of 100 and give potential issue on basis of severity in list.Please return the data in the following structure only without any newline character and no data can be empty and null:
+High,Medium and Low severity tells total number of relevant bugs you listed.
+
 {
   "score": "",
+  "high": "",
+  "medium": "",
+  "low": "",
   "severity": [
     {
       "level": "",
@@ -33,6 +41,7 @@ const prompt = `You are an AI that provides audit responses in below pure json f
     }
   ]
 }
+
 `;
 
 export const getAuditResponse = async (contract: string | null): Promise<AuditResponse | null> => {
@@ -57,7 +66,7 @@ export const getAuditResponse = async (contract: string | null): Promise<AuditRe
     }
 
     const auditResponse: AuditResponse = JSON.parse(responseContent) as AuditResponse;
-
+console.log(auditResponse);
     return auditResponse;
   } catch (error) {
     console.error("Error fetching completion:", error);

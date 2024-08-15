@@ -26,8 +26,13 @@ const openai = new openai_1.default({
     baseURL: "https://integrate.api.nvidia.com/v1",
 });
 const prompt = `You are an AI that provides audit responses in below pure json format without extra infromation.Give audit score percetange out of 100 and give potential issue on basis of severity in list.Please return the data in the following structure only without any newline character and no data can be empty and null:
+High,Medium and Low severity tells total number of relevant bugs you listed.
+
 {
   "score": "",
+  "high": "",
+  "medium": "",
+  "low": "",
   "severity": [
     {
       "level": "",

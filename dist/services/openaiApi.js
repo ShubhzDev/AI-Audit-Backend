@@ -51,9 +51,14 @@ const openai = new openai_1.default({
     apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is set in the environment variables
     baseURL: "https://api.openai.com/v1",
 });
-const prompt = `You are an AI that provides audit responses in below pure json format without extra information. Give audit score percentage out of 100 and give potential issues on the basis of severity in a list. Please return the data in the following structure only without any newline character and no data can be empty and null:
+const prompt = `You are an AI that provides audit responses in below pure json format without extra infromation.Give audit score percetange out of 100 and give potential issue on basis of severity in list.Please return the data in the following structure only without any newline character and no data can be empty and null:
+High,Medium and Low severity tells total number of relevant bugs you listed.
+
 {
   "score": "",
+  "high": "",
+  "medium": "",
+  "low": "",
   "severity": [
     {
       "level": "",
@@ -62,6 +67,7 @@ const prompt = `You are an AI that provides audit responses in below pure json f
     }
   ]
 }
+
 `;
 const getAuditResponse = (contract) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, e_1, _b, _c;
@@ -95,6 +101,7 @@ const getAuditResponse = (contract) => __awaiter(void 0, void 0, void 0, functio
             finally { if (e_1) throw e_1.error; }
         }
         const auditResponse = JSON.parse(responseContent);
+        console.log(auditResponse);
         return auditResponse;
     }
     catch (error) {
