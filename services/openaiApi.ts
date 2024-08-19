@@ -18,8 +18,6 @@ export interface AuditResponse {
   severity: Severity[];
 }
 
-console.log("process.env.OPENAI_API_KEY",process.env.OPENAI_API_KEY);
-
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is set in the environment variables
   baseURL: "https://api.openai.com/v1",
@@ -66,7 +64,7 @@ export const getAuditResponse = async (contract: string | null): Promise<AuditRe
     }
 
     const auditResponse: AuditResponse = JSON.parse(responseContent) as AuditResponse;
-console.log(auditResponse);
+// console.log(auditResponse);
     return auditResponse;
   } catch (error) {
     console.error("Error fetching completion:", error);

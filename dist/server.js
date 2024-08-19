@@ -11,7 +11,7 @@ const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
 (0, connection_1.default)();
 app.use("/api", routes_1.default);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

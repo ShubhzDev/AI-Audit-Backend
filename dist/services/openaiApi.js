@@ -46,7 +46,6 @@ exports.getAuditResponse = void 0;
 const openai_1 = __importDefault(require("openai"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-console.log("process.env.OPENAI_API_KEY", process.env.OPENAI_API_KEY);
 const openai = new openai_1.default({
     apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is set in the environment variables
     baseURL: "https://api.openai.com/v1",

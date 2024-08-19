@@ -10,7 +10,7 @@ connectDB();
 
 app.use("/api",router);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 
 app.listen(PORT,()=>{
     console.log(`Server is running on http://localhost:${PORT}`);
