@@ -56,7 +56,7 @@ const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             auditData: auditResponse,
         });
         const auditEntryId = yield newAuditEntry.save();
-        console.log("auditEntryId", auditEntryId);
+        // console.log("auditEntryId", auditEntryId);
         if (walletAddress) {
             const walletEntry = yield UserAuditHistory_1.default.findOne({ walletAddress: walletAddress });
             if (walletEntry) {

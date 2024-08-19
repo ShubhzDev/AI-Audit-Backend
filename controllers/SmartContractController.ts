@@ -59,7 +59,7 @@ const audit = async (req: Request, res: Response) => {
     });
 
     const auditEntryId: IAudit = await newAuditEntry.save();
-    console.log("auditEntryId", auditEntryId);
+    // console.log("auditEntryId", auditEntryId);
     if (walletAddress) {
       const walletEntry: IUserAuditHistory | null =
         await UserAuditHistoryModel.findOne({ walletAddress: walletAddress });

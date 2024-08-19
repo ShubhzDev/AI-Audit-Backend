@@ -100,7 +100,7 @@ const getAuditResponse = (contract) => __awaiter(void 0, void 0, void 0, functio
             finally { if (e_1) throw e_1.error; }
         }
         const auditResponse = JSON.parse(responseContent);
-        console.log(auditResponse);
+        // console.log(auditResponse);
         return auditResponse;
     }
     catch (error) {
