@@ -56,6 +56,7 @@ const audit = async (req: Request, res: Response) => {
     const newAuditEntry: IAudit = new AuditModel({
       contractAddress: contractAddress,
       auditData: auditResponse,
+      network:network,
     });
 
     const auditEntryId: IAudit = await newAuditEntry.save();
@@ -83,7 +84,7 @@ const audit = async (req: Request, res: Response) => {
         await walletDoc.save();
       }
     }
-    return res.status(200).send(newAuditEntry.auditData);
+    return res.status(200).send(newAuditEntry);
   } else {
     if (walletAddress) {
       const walletEntry: IUserAuditHistory | null =
@@ -110,7 +111,7 @@ const audit = async (req: Request, res: Response) => {
         await walletDoc.save();
       }
     }
-    return res.status(200).send(auditEntry.auditData);
+    return res.status(200).send(auditEntry);
   }
   // } catch (error) {
   //   console.error("Server Error!!");

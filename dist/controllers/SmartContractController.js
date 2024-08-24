@@ -54,6 +54,7 @@ const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const newAuditEntry = new Audit_1.default({
             contractAddress: contractAddress,
             auditData: auditResponse,
+            network: network,
         });
         const auditEntryId = yield newAuditEntry.save();
         // console.log("auditEntryId", auditEntryId);
@@ -77,7 +78,7 @@ const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 yield walletDoc.save();
             }
         }
-        return res.status(200).send(newAuditEntry.auditData);
+        return res.status(200).send(newAuditEntry);
     }
     else {
         if (walletAddress) {
@@ -102,7 +103,7 @@ const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 yield walletDoc.save();
             }
         }
-        return res.status(200).send(auditEntry.auditData);
+        return res.status(200).send(auditEntry);
     }
     // } catch (error) {
     //   console.error("Server Error!!");

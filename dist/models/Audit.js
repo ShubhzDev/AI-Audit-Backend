@@ -39,7 +39,8 @@ const auditResponseSchema = new mongoose_1.Schema({
 });
 const auditSchema = new mongoose_1.default.Schema({
     contractAddress: { type: String, required: true, unique: true },
-    auditData: { type: auditResponseSchema, required: true }
+    auditData: { type: auditResponseSchema, required: true },
+    network: { type: String, required: true },
 });
 const AuditModel = mongoose_1.default.model("Audit", auditSchema, "Audit");
 exports.default = AuditModel;

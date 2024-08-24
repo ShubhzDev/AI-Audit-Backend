@@ -10,6 +10,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 export interface IAudit extends Document{
     contractAddress : string,
     auditData : AuditResponse,
+    network: string,
 }
 
 const severitySchema: Schema = new Schema({
@@ -29,7 +30,8 @@ const auditResponseSchema: Schema = new Schema({
 
 const auditSchema : Schema = new mongoose.Schema({
     contractAddress : {type : String,required : true,unique: true},
-    auditData : { type : auditResponseSchema,required: true}
+    auditData : { type : auditResponseSchema,required: true},
+    network: { type: String, required: true },
 })
 
 const AuditModel = mongoose.model<IAudit>("Audit",auditSchema,"Audit");

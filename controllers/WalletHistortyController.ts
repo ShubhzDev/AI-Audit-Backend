@@ -16,7 +16,7 @@ const walletAuditHistory = async (req: Request, res: Response) => {
 
     if (walletEntry) {
       //when wallet exists
-      return res.status(200).send(walletEntry.listOfAddress);
+      return res.status(200).send(walletEntry);
     } else {
       //wallet doesn't exist
       return res.status(404).send({ message: "No Data!" });

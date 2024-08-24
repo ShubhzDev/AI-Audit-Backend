@@ -23,7 +23,7 @@ const walletAuditHistory = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const walletEntry = yield UserAuditHistory_1.default.findOne({ walletAddress: walletAddress }).populate('listOfAddress');
         if (walletEntry) {
             //when wallet exists
-            return res.status(200).send(walletEntry.listOfAddress);
+            return res.status(200).send(walletEntry);
         }
         else {
             //wallet doesn't exist
