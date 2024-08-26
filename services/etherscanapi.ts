@@ -13,6 +13,7 @@ interface EtherscanResponse {
     DeployedBytecode: string;
     Bytecode: string;
     SourceCodeLink: string;
+    ABI:string,
   }>;
 }
 
@@ -22,10 +23,18 @@ export const getRawSmartContractFromEtH = async(contractAddress: string): Promis
 
     const response = await axios.get<EtherscanResponse>(etherScanUrl);
     const data = response.data;
-    // console.log(data);
+    // console.log("getRawSmartContractFromEtH :",data);
 
     if (data.status === "1") {
-      return data.result[0].SourceCode;
+      if(data.result[0].ABI==="Contract source code not verified"){
+        return "Contract source code not verified";
+      }
+      else if(data.result[0].SourceCode.trim() != ""){
+        return data.result[0].SourceCode;
+      }
+      else{
+        return null;
+      }
     } else {
       return null;
     }

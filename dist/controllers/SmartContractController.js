@@ -23,34 +23,38 @@ const audit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contractAddress = req.params.contractAddress;
     const walletAddress = req.body.walletAddress;
     const network = req.body.network;
-    if (!contractAddress || contractAddress.trim() === "") {
-        return res.status(500).send({ message: "contract address is missing" });
-    }
-    let rawContract = null;
-    if (network === "ETH") {
-        rawContract = yield (0, etherscanapi_1.getRawSmartContractFromEtH)(contractAddress);
-    }
-    else if (network === "BNB") {
-        rawContract = yield (0, binanceapi_1.getRawSmartContractFromBNB)(contractAddress);
-    }
-    else {
-        return res.status(500).send({ message: "Invalid Network!" });
-    }
-    if (!rawContract || rawContract.trim() === "") {
-        console.log("rawContract null ");
-        return res.status(500).send({ message: "Invalid Contract Address!" });
-    }
-    console.log("came here ");
-    const auditResponse = yield (0, openaiApi_1.getAuditResponse)(rawContract);
-    if (auditResponse === null) {
-        return res.status(500).send({ message: "Invalid Contract Address!" });
-    }
+    console.log("contractAddress : " + contractAddress);
+    console.log("walletAddress : " + walletAddress);
+    console.log("network : " + network);
     const auditEntry = yield Audit_1.default.findOne({
         contractAddress: contractAddress,
     });
-    // console.log("contractAddress", contractAddress);
-    // console.log("auditData", auditResponse);
     if (!auditEntry) {
+        if (!contractAddress || contractAddress.trim() === "") {
+            return res.status(500).send({ message: "contract address is missing" });
+        }
+        let rawContract = null;
+        if (network === "ETH") {
+            rawContract = yield (0, etherscanapi_1.getRawSmartContractFromEtH)(contractAddress);
+        }
+        else if (network === "BNB") {
+            rawContract = yield (0, binanceapi_1.getRawSmartContractFromBNB)(contractAddress);
+        }
+        else {
+            return res.status(500).send({ message: "Invalid Network!" });
+        }
+        if (!rawContract || rawContract.trim() === "") {
+            console.log("RawContract Null");
+            return res.status(404).send({ message: `Contract Doesn't Exist in ${network}!` });
+        }
+        else if (rawContract === "Contract source code not verified") {
+            return res.status(500).send({ message: `Contract source code not verified` });
+        }
+        console.log("came here ");
+        const auditResponse = yield (0, openaiApi_1.getAuditResponse)(rawContract);
+        if (auditResponse === null) {
+            return res.status(500).send({ message: "AI unable to find Audit" });
+        }
         const newAuditEntry = new Audit_1.default({
             contractAddress: contractAddress,
             auditData: auditResponse,

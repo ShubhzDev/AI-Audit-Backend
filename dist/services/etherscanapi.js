@@ -19,9 +19,17 @@ const getRawSmartContractFromEtH = (contractAddress) => __awaiter(void 0, void 0
         const etherScanUrl = `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${contractAddress}&apikey=${process.env.Ether_Scan_Api}`;
         const response = yield axios_1.default.get(etherScanUrl);
         const data = response.data;
-        // console.log(data);
+        // console.log("getRawSmartContractFromEtH :",data);
         if (data.status === "1") {
-            return data.result[0].SourceCode;
+            if (data.result[0].ABI === "Contract source code not verified") {
+                return "Contract source code not verified";
+            }
+            else if (data.result[0].SourceCode.trim() != "") {
+                return data.result[0].SourceCode;
+            }
+            else {
+                return null;
+            }
         }
         else {
             return null;

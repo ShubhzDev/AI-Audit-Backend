@@ -15,44 +15,49 @@ const audit = async (req: Request, res: Response) => {
   const walletAddress: string = req.body.walletAddress;
   const network: string = req.body.network;
 
-  if (!contractAddress || contractAddress.trim() === "") {
-    return res.status(500).send({ message: "contract address is missing" });
-  }
-
-  let rawContract: string | null = null;
-
-  if (network === "ETH") {
-    rawContract = await getRawSmartContractFromEtH(contractAddress);
-  } else if (network === "BNB") {
-    rawContract = await getRawSmartContractFromBNB(contractAddress);
-  } else {
-    return res.status(500).send({ message: "Invalid Network!" });
-  }
-
-  if (!rawContract || rawContract.trim() === "") {
-    console.log("rawContract null ");
-
-    return res.status(500).send({ message: "Invalid Contract Address!" });
-  }
-
-  console.log("came here ");
-
-  const auditResponse: AuditResponse | null = await getAuditResponse(
-    rawContract
-  );
-
-  if (auditResponse === null) {
-    return res.status(500).send({ message: "Invalid Contract Address!" });
-  }
+  console.log("contractAddress : "+contractAddress)
+  console.log("walletAddress : "+walletAddress)
+  console.log("network : "+network)
 
   const auditEntry: IAudit | null = await AuditModel.findOne({
     contractAddress: contractAddress,
   });
 
-  // console.log("contractAddress", contractAddress);
-  // console.log("auditData", auditResponse);
-
   if (!auditEntry) {
+
+    if (!contractAddress || contractAddress.trim() === "") {
+      return res.status(500).send({ message: "contract address is missing" });
+    }
+  
+    let rawContract: string | null = null;
+  
+    if (network === "ETH") {
+      rawContract = await getRawSmartContractFromEtH(contractAddress);
+    } else if (network === "BNB") {
+      rawContract = await getRawSmartContractFromBNB(contractAddress);
+    } else {
+      return res.status(500).send({ message: "Invalid Network!" });
+    }
+  
+    if (!rawContract || rawContract.trim() === "") {
+      console.log("RawContract Null");
+      return res.status(404).send({ message: `Contract Doesn't Exist in ${network}!`});
+    }
+    else if(rawContract==="Contract source code not verified")
+    {
+      return res.status(500).send({ message: `Contract source code not verified`});
+    }
+  
+    console.log("came here ");
+  
+    const auditResponse: AuditResponse | null = await getAuditResponse(
+      rawContract
+    );
+  
+    if (auditResponse === null) {
+      return res.status(500).send({ message: "AI unable to find Audit" });
+    }
+
     const newAuditEntry: IAudit = new AuditModel({
       contractAddress: contractAddress,
       auditData: auditResponse,
@@ -117,5 +122,6 @@ const audit = async (req: Request, res: Response) => {
   //   console.error("Server Error!!");
   // }
 };
+
 
 export default audit;

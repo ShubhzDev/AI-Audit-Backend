@@ -66,7 +66,6 @@ High,Medium and Low severity tells total number of relevant bugs you listed.
     }
   ]
 }
-
 `;
 const getAuditResponse = (contract) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, e_1, _b, _c;

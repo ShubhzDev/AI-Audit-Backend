@@ -13,6 +13,7 @@ interface EtherscanResponse {
     DeployedBytecode: string;
     Bytecode: string;
     SourceCodeLink: string;
+    ABI:string,
   }>;
 }
 
@@ -25,12 +26,16 @@ export const getRawSmartContractFromBNB = async(contractAddress: string): Promis
     // console.log(data);
 
     if (data.status === "1") {
-      // console.log("data.result[0].SourceCode ",data);
-      return data.result[0].SourceCode;
-      
+      if(data.result[0].ABI==="Contract source code not verified"){
+        return "Contract source code not verified";
+      }
+      else if(data.result[0].SourceCode.trim() != ""){
+        return data.result[0].SourceCode;
+      }
+      else{
+        return null;
+      }
     } else {
-      console.log("bnb not error");
- 
       return null;
     }
   } catch (error) {

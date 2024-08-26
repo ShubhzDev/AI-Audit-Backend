@@ -39,7 +39,6 @@ High,Medium and Low severity tells total number of relevant bugs you listed.
     }
   ]
 }
-
 `;
 
 export const getAuditResponse = async (contract: string | null): Promise<AuditResponse | null> => {
