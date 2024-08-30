@@ -21,6 +21,7 @@ const audit = async (req: Request, res: Response) => {
 
   const auditEntry: IAudit | null = await AuditModel.findOne({
     contractAddress: contractAddress,
+    network:network,
   });
 
   if (!auditEntry) {
@@ -45,7 +46,7 @@ const audit = async (req: Request, res: Response) => {
     }
     else if(rawContract==="Contract source code not verified")
     {
-      return res.status(500).send({ message: `Contract source code not verified`});
+      return res.status(500).send({ message: `Contract source code at address is not verified.`});
     }
   
     console.log("came here ");

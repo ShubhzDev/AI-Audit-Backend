@@ -19,7 +19,13 @@ const walletAuditHistory = async (req: Request, res: Response) => {
       return res.status(200).send(walletEntry);
     } else {
       //wallet doesn't exist
-      return res.status(404).send({ message: "No Data!" });
+      const walletDoc = new UserAuditHistoryModel({
+        walletAddress: walletAddress,
+        listOfAddress: [],
+      });
+
+      await walletDoc.save();
+      return res.status(200).send(walletDoc);
     }
   }
   

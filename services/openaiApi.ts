@@ -63,7 +63,7 @@ export const getAuditResponse = async (contract: string | null): Promise<AuditRe
     }
 
     const auditResponse: AuditResponse = JSON.parse(responseContent) as AuditResponse;
-// console.log(auditResponse);
+    // console.log(auditResponse);
     return auditResponse;
   } catch (error) {
     console.error("Error fetching completion:", error);
