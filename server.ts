@@ -5,7 +5,7 @@ import router from "./routes/routes";
 import cors from "cors";
 
 const corsOptions = {
-    origin: 'https://ai-auditing-stagging-bz1myt2a2-shubhz-team.vercel.app', // Your frontend URL
+    origin: 'https://ai-auditing-stagging.vercel.app/', // Your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 };

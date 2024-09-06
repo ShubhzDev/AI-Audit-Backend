@@ -9,7 +9,7 @@ const connection_1 = __importDefault(require("./db/connection"));
 const routes_1 = __importDefault(require("./routes/routes"));
 const cors_1 = __importDefault(require("cors"));
 const corsOptions = {
-    origin: 'https://ai-auditing-stagging-bz1myt2a2-shubhz-team.vercel.app', // Your frontend URL
+    origin: 'https://ai-auditing-stagging.vercel.app/', // Your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 };
