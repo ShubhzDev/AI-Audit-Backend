@@ -15,7 +15,7 @@ const corsOptions = {
     credentials: true, // Allow credentials (if needed)
 };
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)(corsOptions));
+app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 (0, connection_1.default)();
 app.use("/api", routes_1.default);
