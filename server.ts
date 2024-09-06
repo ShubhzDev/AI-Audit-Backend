@@ -4,14 +4,14 @@ import connectDB from "./db/connection";
 import router from "./routes/routes";
 import cors from "cors";
 
-const corsOptions = {
-    origin: 'https://ai-auditing-stagging-bz1myt2a2-shubhz-team.vercel.app', // Your frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-};
+// const corsOptions = {
+//     origin: 'https://ai-auditing-stagging-bz1myt2a2-shubhz-team.vercel.app', // Your frontend URL
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+//     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+// };
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.json());
 
 connectDB();
