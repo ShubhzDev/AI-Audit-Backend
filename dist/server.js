@@ -8,14 +8,14 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const connection_1 = __importDefault(require("./db/connection"));
 const routes_1 = __importDefault(require("./routes/routes"));
 const cors_1 = __importDefault(require("cors"));
-// const corsOptions = {
-//     origin: 'https://ai-auditing-stagging-bz1myt2a2-shubhz-team.vercel.app', // Your frontend URL
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-//     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-// };
+const corsOptions = {
+    origin: 'https://ai-auditing-stagging-bz1myt2a2-shubhz-team.vercel.app', // Your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+};
 const app = (0, express_1.default)();
-app.options('*', (0, cors_1.default)());
-// app.use(cors());
+// app.options('*', cors())
+app.use((0, cors_1.default)(corsOptions));
 app.use(body_parser_1.default.json());
 (0, connection_1.default)();
 app.use("/api", routes_1.default);
