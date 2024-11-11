@@ -1,8 +1,5 @@
 import mongoose ,{Schema,Document, Types, StringSchemaDefinition } from "mongoose";
-// import AutoIncrement from "mongoose-sequence"; // Import the plugin
 
-// // Pass the mongoose instance to the AutoIncrement function
-// const AutoIncrementPlugin = AutoIncrement(mongoose);
 
 import { AuditResponse } from "../services/nims";
 const AutoIncrement = require('mongoose-sequence')(mongoose);
